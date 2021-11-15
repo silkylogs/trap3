@@ -1,0 +1,1 @@
+g++ -o wrapper.exe -O2 wrapperapp.cpp
