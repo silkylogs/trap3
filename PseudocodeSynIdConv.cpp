@@ -1,6 +1,6 @@
 #include "PseudocodeSynIdConv.h"
 
-// note: compile individual implementation files with command
+// Note to self: compile individual implementation files with command
 // gcc -c filename.cpp
 // to get the filename.o file
 
@@ -423,13 +423,15 @@ void PseudocodeSynConv(OutLineStats &olc, std::string &line)
 
 	else if(olc.mode == olc.UndefinedLine)
 	{
-		line.insert(0, "#");
-		line.append(" <--- Undefined line detected here");
+		/*line.insert(0, "#");
+		line.append(" <--- Undefined line detected here");*/
+		std::cout << "PseudocodeSynIdConv.cpp/ConvertLine() In line:\n"
+		<< line << "\n" << "Warning: line undefined according to pseudocode convention\n";
 	}
 
 	else
 	{
-		std::cout << "pseudocode_convert.h/ConvertLine(): ";
+		std::cout << "PseudocodeSynIdConv.cpp/ConvertLine(): ";
 		std::cout << "This condition is never to be. \nWhy are you hacking?";
 		exit(1);
 	}
