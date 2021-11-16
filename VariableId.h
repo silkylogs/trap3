@@ -1,6 +1,7 @@
 #pragma once
 #include "global_declarations.h"
-#include <vector>
+#include "FileUtils.h"
+#include <algorithm>
 
 const std::string unwanted_chars = "=(:)+-^*/<>[]\"\',";
 
@@ -74,3 +75,37 @@ int RemoveTextEnclosedByChar(std::string &text, const char delimiter);
 
 /******************************************************************************/
 
+void MakeDeclaredVarIds
+(
+	std::vector<VariableId> &declaredVarIds,
+	char *srcFileName,
+	std::fstream &sourceFile
+);
+
+void MakeDetectedIds
+(
+	std::vector<VariableId> &detectedIds,
+	char *srcFileName,
+	std::fstream &sourceFile
+);
+
+void MakeUtilisedVarIds
+(
+	const std::vector<VariableId> &declaredVarIds,
+	const std::vector<VariableId> &detectedIds,
+	std::vector<VariableId> &utilisedVarIds
+);
+
+void ExtractLineNoFromVarIdVector
+(
+	std::vector<int> &lineNoVector,
+	const std::vector<VariableId> &varIdVector
+);
+
+void AppendPythonDeclaredDatatype
+(
+	const std::vector<VariableId> &declaredVarIds,
+	const std::vector<int> &decVarLineNos,
+	char *outFileName,
+	std::fstream &outFile
+);
