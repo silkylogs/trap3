@@ -1,5 +1,6 @@
 #include "VariableId.h"
 #include "PseudocodeSynIdConv.h"
+#include <algorithm>
 
 /******************************************************************************/
 
@@ -479,3 +480,171 @@ int RemoveTextEnclosedByChar(std::string &text, const char delimiter)
 
 
 /******************************************************************************/
+
+
+void MakeDeclaredVarIds
+(
+	std::vector<VariableId> &declaredVarIds,
+	char *srcFileName,
+	std::fstream &sourceFile
+)
+{
+	int lineNo = 1;
+	std::string tempLine;
+
+	OpenInputFile(srcFileName, sourceFile);
+	while(std::getline(sourceFile, tempLine))
+	{
+		if(tempLine.find("DECLARE") != std::string::npos)
+		{
+			DetectAddDeclaredVariable(declaredVarIds, tempLine, lineNo);
+		}
+		//declaredVarIds.front().PrintDetails();
+		lineNo++;
+	}
+	CloseInputFile(sourceFile);
+	return;
+}
+
+void MakeDetectedIds
+(
+	std::vector<VariableId> &detectedIds,
+	char *srcFileName,
+	std::fstream &sourceFile
+)
+{
+	std::string tempLine;
+	int lineNo = 1;
+
+	OpenInputFile(srcFileName, sourceFile);
+	while(std::getline(sourceFile, tempLine))
+	{
+		//std::cout << "processing line " << lineNo << "\n";
+		std::vector<VariableId> temp;
+
+		//associate line number with each VariableId
+		temp = DetectNamesInLine(tempLine);
+		for(size_t i = 0; i < temp.size(); i++)
+		{
+			temp[i].lineNumber = lineNo;
+			//std::cout << "details of var inserted:\n";
+			//temp[i].PrintDetails();
+		}
+
+		//append the batch to detectedIds
+		detectedIds.insert
+		(
+			detectedIds.end(),
+			temp.begin(),
+			temp.end()
+		);
+
+		lineNo++;
+	}
+	CloseInputFile(sourceFile);
+	return;
+}
+
+//this generates the true list of variable ids
+//note: this may fail if number of detected IDs < declared IDs
+//hence check who is bigger before deciding to assign
+void MakeUtilisedVarIds
+(
+	const std::vector<VariableId> &declaredVarIds,
+	const std::vector<VariableId> &detectedIds,
+	std::vector<VariableId> &utilisedVarIds
+)
+{
+	for(size_t j = 0; j < detectedIds.size(); j++)
+	{
+		VariableId tVarId;
+
+		//look up each declaredVarId variable name
+		//find how many times it has been used in the script
+		//for each time it has been used, put a duplicate one in utilisedVarIds
+		//the exception being the line number
+		for(size_t i = 0; i < declaredVarIds.size(); i++)
+		{
+			if(declaredVarIds[i].variableName == detectedIds[j].variableName)
+			{
+				tVarId.variableName = declaredVarIds[i].variableName;
+				tVarId.variableDataType = declaredVarIds[i].variableDataType;
+				tVarId.lineNumber = detectedIds[j].lineNumber;
+
+				utilisedVarIds.insert(utilisedVarIds.begin(), tVarId);
+
+				//std::cout << "inserted var in utilisedVarIds with details: ";
+				//tVarId.PrintDetails();
+			}
+		}
+	}
+
+	return;
+}
+
+void ExtractLineNoFromVarIdVector
+(
+	std::vector<int> &lineNoVector,
+	const std::vector<VariableId> &varIdVector
+)
+{
+	for(size_t i = 0; i < varIdVector.size(); i++)
+	{
+		lineNoVector.insert
+		(
+			lineNoVector.begin(),
+			varIdVector[i].lineNumber
+		);
+		//std::cout << "inserted line " << varIdVector[i].lineNumber << "\n";
+	}
+	std::sort(lineNoVector.begin(), lineNoVector.end());
+	return;
+}
+
+void AppendPythonDeclaredDatatype
+(
+	const std::vector<VariableId> &declaredVarIds,
+	const std::vector<int> &decVarLineNos,
+	char *outFileName,
+	std::fstream &outFile
+)
+{
+	std::vector<std::string> tempOutputFileLines;
+
+	ReadTxtFileContentToVector(tempOutputFileLines, outFile, outFileName);
+	int decVarLineIndex = 0;
+	for(size_t lineIndex = 0; lineIndex < tempOutputFileLines.size(); lineIndex++)
+	{
+		if((lineIndex + 1) == (size_t)(decVarLineNos[decVarLineIndex]))
+		{
+			std::string vNameTemp = tempOutputFileLines[lineIndex];
+
+			//strip the variable name from the statement
+			RemoveLeadingIndent(vNameTemp);
+			RemoveUnwantedCharsFromLine(vNameTemp, "=");
+			ExcessSpaceRemover(vNameTemp);
+			vNameTemp.pop_back();
+
+			//search for the matching VariableID
+			for(size_t dVarInd = 0; dVarInd < declaredVarIds.size(); dVarInd++)
+			{
+				//Append the datatype
+				if(declaredVarIds[dVarInd].variableName == vNameTemp)
+				{
+					tempOutputFileLines[lineIndex] +=
+					EquivalentPythonVar(declaredVarIds[dVarInd]);
+					break;
+				}
+			}
+
+			decVarLineIndex++;
+		}
+
+		//std::cout << "[" << lineIndex + 1 << "]: "
+		//<< tempOutputFileLines[lineIndex] << "\n";
+	}
+	WriteStringVectorToFile(tempOutputFileLines, outFile, outFileName);
+	return;
+}
+
+
