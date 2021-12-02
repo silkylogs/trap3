@@ -1,10 +1,9 @@
 #include "FileUtils.h"
 
-void ReadTxtFileContentToVector
-(
+void ReadTxtFileContentToVector(
 	std::vector<std::string> &vector,
 	std::fstream &file,
-	const char *fileName
+	const std::string &fileName
 )
 {
 	std::string line;
@@ -27,11 +26,10 @@ void ReadTxtFileContentToVector
 	return;
 }
 
-void WriteStringVectorToFile
-(
+void WriteStringVectorToFile(
 	std::vector<std::string> &vector,
 	std::fstream &file,
-	const char *fileName
+	const std::string &fileName
 )
 {
 	std::string line;
@@ -45,7 +43,7 @@ void WriteStringVectorToFile
 	}
 	std::cout << "Opened file for writing\n";
 
-	for(int i = 0; i < vector.size(); i++)
+	for(size_t i = 0; i < vector.size(); i++)
 	{
 		file << vector[i] << "\n";
 	}
@@ -55,15 +53,16 @@ void WriteStringVectorToFile
 	return;
 }
 
-void EraseFileContents(const char *fileName, std::fstream &file)
+void EraseFileContents(const std::string &fileName, std::fstream &file)
 {
 	file.open(fileName, std::ofstream::out | std::ofstream::trunc);
 	file.close();
 }
 
-void OpenInputFile(const char *fileName, std::fstream &file)
+void OpenInputFile(const std::string &fileName, std::fstream &file)
 {
-	printf("Opening %s...\n", fileName);
+	//printf("Opening %s...\n", fileName);
+	std::cout << "Opening " << fileName << "...\n";
 	file.open(fileName);
 	if(!file.is_open())
 	{
@@ -86,9 +85,10 @@ void CloseInputFile(std::fstream &file)
 	return;
 }
 
-void OpenOutputFile(const char *fileName, std::fstream &file)
+void OpenOutputFile(const std::string &fileName, std::fstream &file)
 {
-	printf("Opening %s...\n", fileName);
+	//printf("Opening %s...\n", fileName);
+	std::cout << "Opening " << fileName << "...\n";
 	file.open(fileName);
 	if(!file.is_open())
 	{
