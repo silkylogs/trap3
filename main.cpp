@@ -1,4 +1,4 @@
-/*******************************************************************************
+/***************************************************************************************************
 TODO:
 -	Fix array declaration
 -	Write some actual documentation for this language
@@ -7,21 +7,21 @@ program function
 - pass 1: converting semantics to pseudocode
 - pass 2: enclosing variables
 - pass 3: replacing operators
-*******************************************************************************/
+***************************************************************************************************/
 #include "global_declarations.h"
 #include "FileUtils.h"
 #include "PseudocodeSynIdConv.h"
 #include "VariableId.h"
 
-#include <algorithm> //for VariablEnclosingPass()
+#include <algorithm> //for VariableEnclosingPass()
 
-char srcFileName[256] = "source.txt";
-char outFileName[256] = "output.py";
+std::string srcFileName = "source.txt";
+std::string outFileName = "output.py";
 
 std::fstream sourceFile;
 std::fstream outFile;
 
-/******************************************************************************/
+/**************************************************************************************************/
 //misc functions
 
 void ArgControl(int argc, char *argv[])
@@ -34,13 +34,17 @@ void ArgControl(int argc, char *argv[])
 	else if(argc == 3)
 	{
 		printf("Input and output files detected\n");
-		strcpy(srcFileName, argv[1]);
-		strcpy(outFileName, argv[2]);
+		std::string s(argv[1]);
+		std::string o(argv[2]);
+		srcFileName = s;
+		outFileName = o;
+		return;
 	}
 	else if(argc == 2)
 	{
 		printf("Input file detected, searching for %s...\n", argv[1]);
-		strcpy(srcFileName, argv[1]);
+		std::string s(argv[1]);
+		srcFileName = s;
 		return;
 	}
 	else if(argc == 1) 
@@ -51,8 +55,7 @@ void ArgControl(int argc, char *argv[])
 	}
 	else
 	{
-		std::cout << "main.cpp/ArgControl(): " << 
-		"How did you reach the else condition?\n";
+		std::cout << "main.cpp/ArgControl(): How did you reach the else condition?\n";
 		exit(1);
 	}
 }
@@ -70,7 +73,7 @@ void CloseBothFiles()
 	return;
 }
 
-/******************************************************************************/
+/**************************************************************************************************/
 
 void PseudocodeSyntaxConversionPass()
 {
@@ -104,7 +107,7 @@ void PseudocodeSyntaxConversionPass()
 	std::cout << "\n";
 }
 
-/******************************************************************************/
+/**************************************************************************************************/
 
 void VariableEnclosingPass()
 {
@@ -128,15 +131,14 @@ void VariableEnclosingPass()
 	//Write passes
 	std::vector<int> decVarLineNos;
 	ExtractLineNoFromVarIdVector(decVarLineNos, declaredVarIds);
-
-	AppendPythonDeclaredDatatype(declaredVarIds, decVarLineNos, outFileName, outFile);
+	AppendPythonDeclaredDatatype(declaredVarIds, decVarLineNos, outFileName.c_str(), outFile);
 
 	std::cout << "\n";
 	std::cout << "Variable enclosing complete.\n";
 	std::cout << "\n";
 }
 
-/******************************************************************************/
+/**************************************************************************************************/
 
 void OperatorReplacementPass()
 {
@@ -194,7 +196,7 @@ void OperatorReplacementPass()
 	std::cout << "\n";
 }
 
-/******************************************************************************/
+/**************************************************************************************************/
 
 //its only job is to comment out marked lines in the out file
 void LineCommenter()
@@ -208,7 +210,7 @@ void LineCommenter()
 	std::cout << "\n";
 }
 
-/******************************************************************************/
+/**************************************************************************************************/
 
 int main(int argc, char *argv[])
 {
@@ -227,22 +229,13 @@ int main(int argc, char *argv[])
 	std::cout << "\n";
 	OperatorReplacementPass();
 
-	/*
-	do a "press enter to continue mechanic" when there are zero arguments
-	say, incase someone actually uses this like some
-	generic double click to run windows application
-
-	or make a wrapper applicaton for that which solely focuses on the UI
-	side of things, for this program is getting too bloated as is
-	*/
 	std::cout << "\n\n\n";
 	std::cout << "Complete translation successful.\n";
 
 
 	/*
-	do a "press enter to continue mechanic" when there are zero arguments
-	say, incase someone actually uses this like some
-	generic double click to run windows application
+	Does a "press enter to continue mechanic" when there are zero arguments in the use case where
+	someone actually uses this like some generic double click to run windows application
 	*/
 	if(argc == 1)
 	{
