@@ -7,30 +7,41 @@
 std::string EquivalentPythonVar(VariableId vId)
 {
 	std::string v;
-	if(vId.variableDataType == VariableId::pseudocodeDataTypes::Int)
-	{
-		v = "int(0)";
-	}
-	else if(vId.variableDataType == VariableId::pseudocodeDataTypes::Real)
-	{
-		v = "float(0)";
-	}
-	else if(vId.variableDataType == VariableId::pseudocodeDataTypes::String)
-	{
-		v = "str(\"\")";
-	}
-	else if(vId.variableDataType == VariableId::pseudocodeDataTypes::Char)
-	{
-		v = "str(\"\")";
-	}
-	else if(vId.variableDataType == VariableId::pseudocodeDataTypes::Bool)
-	{
-		v = "bool(0)";
-	}
+
+		/* //to be moved to variable
+		if(olc.lineDataType == OutLineStats::pseudocodeDataTypes::Integer)
+		{
+			temp = "[int(0)]";
+		}
+		else if(olc.lineDataType == OutLineStats::pseudocodeDataTypes::Real)
+		{
+			temp = "[float(0)]";
+		}
+		else if
+		(
+			olc.lineDataType == OutLineStats::pseudocodeDataTypes::String ||
+			olc.lineDataType == OutLineStats::pseudocodeDataTypes::Char
+		)
+		{
+			temp = "[str(0)]";
+		}
+		else if(olc.lineDataType == OutLineStats::pseudocodeDataTypes::Bool)
+		{
+			temp = "[bool(0)]";
+		}
+
+		line += temp;
+		*/
+
+	if(vId.variableDataType == VariableId::pseudocodeDataTypes::Int)         { v = "int(0)"; }
+	else if(vId.variableDataType == VariableId::pseudocodeDataTypes::Real)   { v = "float(0)"; }
+	else if(vId.variableDataType == VariableId::pseudocodeDataTypes::String) { v = "str(\"\")"; }
+	else if(vId.variableDataType == VariableId::pseudocodeDataTypes::Char)   { v = "str(\"\")"; }
+	else if(vId.variableDataType == VariableId::pseudocodeDataTypes::Bool)   { v = "bool(0)"; }
 	else if(vId.variableDataType == VariableId::pseudocodeDataTypes::None)
 	{
 		std::cout << "EquivalentPythonVar(): Datatype \"None\" detected\n";
-		v = "\0";
+ 		v = "\0";
 	}
 	else
 	{
@@ -43,7 +54,7 @@ std::string EquivalentPythonVar(VariableId vId)
 
 bool IsVariable(std::string str)
 {
-	for(int i = 0; i < str.length(); i++)
+	for(size_t i = 0; i < str.length(); i++)
 	{
 		if(!isalnum(str[i]) || str[i] != '_')
 		{
@@ -115,8 +126,7 @@ VariableId::pseudocodeDataTypes DeclaredVarDataType(const std::string line)
 	}
 }
 
-void DetectAddDeclaredVariable
-(
+void DetectAddDeclaredVariable(
 	std::vector<VariableId> &varIdGrp,
 	std::string line,
 	int lineNo
@@ -125,7 +135,6 @@ void DetectAddDeclaredVariable
 	std::string varName = DeclaredVariableName(line);
 	VariableId::pseudocodeDataTypes dataType = DeclaredVarDataType(line);
 	VariableId temp(varName, dataType, lineNo);
-
 	varIdGrp.insert(varIdGrp.begin(), temp);
 }
 
@@ -138,14 +147,13 @@ void DetectAddDeclaredVariable
 * The reserved words(keywords) cannot be used naming the variable.
 */
 
-bool StringContainsCharInSet
-(
+bool StringContainsCharInSet(
 	std::string &originalLine,
 	const std::string &charSet
 )
 {
-	int i = 0;
-	int j = 0;
+	size_t i = 0;
+	size_t j = 0;
 	while(i < originalLine.length())
 	{
 		while(j < charSet.length())
@@ -167,8 +175,8 @@ bool StringContainsCharInSet
 
 int IndexOfCharInSet(std::string &originalLine, const std::string &charSet)
 {
-	int i = 0;
-	int j = 0;
+	size_t i = 0;
+	size_t j = 0;
 	while(i < originalLine.length())
 	{
 		while(j < charSet.length())
@@ -238,15 +246,6 @@ std::vector<VariableId> DetectNamesInLine(std::string line)
 
 		//remove commas
 		RemoveUnwantedCharsFromLine(line, ",");
-
-		/*this one is for that one person who surrounds strings with single
-		//qoutes... nah they can suffer
-		flag = 0;
-		while(flag == 0)
-		{
-			RemoveTextEnclosedByChar(line, '\'');
-		}*/
-
 		RemoveUnwantedCharsFromLine(line, unwanted_chars);
 		RemoveLeadingIndent(line);
 		ExcessSpaceRemover(line);
@@ -340,13 +339,12 @@ std::vector<VariableId> DetectNamesInLine(std::string line)
 	return namesUsedInLine;
 }
 
-void RemoveUnwantedCharsFromLine
-(
+void RemoveUnwantedCharsFromLine(
 	std::string &line,
 	const std::string &unwantedChars
 )
 {
-	int i = 0;
+	size_t i = 0;
 	while(StringContainsCharInSet(line, unwanted_chars))
 	{
 		i = IndexOfCharInSet(line, unwanted_chars);
@@ -380,7 +378,7 @@ void ExcessSpaceRemover(std::string &line)
 		return;
 	}
 
-	for(int i = 0; i < line.length(); i++)
+	for(size_t i = 0; i < line.length(); i++)
 	{
 		//find space position
 		if(line[i] != ' ')
@@ -401,8 +399,7 @@ void ExcessSpaceRemover(std::string &line)
 
 //issue: doesnt store the last variable in the string
 //solution: either add a space at the end or mod the else if
-void StoreNameListIntoVariableVector
-(
+void StoreNameListIntoVariableVector(
 	std::string &varString,
 	std::vector<VariableId> &varVector
 )
@@ -413,7 +410,7 @@ void StoreNameListIntoVariableVector
 	//hack to make the function parse the last name in the string
 	varString += ' ';
 
-	for(int i = 0; i < varString.length(); i++)
+	for(size_t i = 0; i < varString.length(); i++)
 	{
 		if(isalnum(varString[i]) || varString[i] == '_')
 		{
@@ -445,7 +442,7 @@ int RemoveTextEnclosedByChar(std::string &text, const char delimiter)
 	size_t endMarker = 0;
 
 	//check for first occurence of string
-	for(int i = 0; i < text.length(); i++)
+	for(size_t i = 0; i < text.length(); i++)
 	{
 		if(text[i] == delimiter)
 		{
@@ -459,7 +456,7 @@ int RemoveTextEnclosedByChar(std::string &text, const char delimiter)
 	}
 
 	//check for next occurence in string
-	for(int i = startMarker + 1; i < text.length(); i++)
+	for(size_t i = startMarker + 1; i < text.length(); i++)
 	{
 		if(text[i] == delimiter)
 		{
@@ -482,14 +479,13 @@ int RemoveTextEnclosedByChar(std::string &text, const char delimiter)
 /******************************************************************************/
 
 
-void MakeDeclaredVarIds
-(
+void MakeDeclaredVarIds(
 	std::vector<VariableId> &declaredVarIds,
-	char *srcFileName,
+	std::string &srcFileName,
 	std::fstream &sourceFile
 )
 {
-	int lineNo = 1;
+	size_t lineNo = 1;
 	std::string tempLine;
 
 	OpenInputFile(srcFileName, sourceFile);
@@ -506,15 +502,14 @@ void MakeDeclaredVarIds
 	return;
 }
 
-void MakeDetectedIds
-(
+void MakeDetectedIds(
 	std::vector<VariableId> &detectedIds,
-	char *srcFileName,
+	std::string &srcFileName,
 	std::fstream &sourceFile
 )
 {
 	std::string tempLine;
-	int lineNo = 1;
+	size_t lineNo = 1;
 
 	OpenInputFile(srcFileName, sourceFile);
 	while(std::getline(sourceFile, tempLine))
@@ -605,7 +600,7 @@ void AppendPythonDeclaredDatatype
 (
 	const std::vector<VariableId> &declaredVarIds,
 	const std::vector<int> &decVarLineNos,
-	char *outFileName,
+	const std::string &outFileName,
 	std::fstream &outFile
 )
 {
