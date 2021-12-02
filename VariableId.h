@@ -40,72 +40,75 @@ class VariableId
 };
 
 std::string EquivalentPythonVar(VariableId vId);
+
 bool IsVariable(std::string str);
+
 std::string DeclaredVariableName(std::string line);
+
 VariableId::pseudocodeDataTypes DeclaredVarDataType(const std::string line);
-void DetectAddDeclaredVariable
-(
+
+void DetectAddDeclaredVariable(
 	std::vector<VariableId> &varIdGrp,
 	std::string line,
 	int lineNo
 );
-bool StringContainsCharInSet
-(
+
+bool StringContainsCharInSet(
 	std::string &originalLine,
 	const std::string &charSet
 );
+
 //returns negative number if not found
 int IndexOfCharInSet(std::string &originalLine, const std::string &charSet);
+
 std::vector<VariableId> DetectNamesInLine(std::string line);
-void RemoveUnwantedCharsFromLine
-(
+
+void RemoveUnwantedCharsFromLine(
 	std::string &line,
 	const std::string &unwantedChars
 );
+
 void RemoveLeadingIndent(std::string &line);
+
 //removes excessive spacing (which is more than 1)
 void ExcessSpaceRemover(std::string &line);
-void StoreNameListIntoVariableVector
-(
+
+void StoreNameListIntoVariableVector(
 	std::string &varString,
 	std::vector<VariableId> &varVector
 );
+
 // Returns zero on success
 int RemoveTextEnclosedByChar(std::string &text, const char delimiter);
 
 /******************************************************************************/
 
-void MakeDeclaredVarIds
-(
+void MakeDeclaredVarIds(
 	std::vector<VariableId> &declaredVarIds,
-	char *srcFileName,
+	std::string &srcFileName,
 	std::fstream &sourceFile
 );
 
-void MakeDetectedIds
-(
+void MakeDetectedIds(
 	std::vector<VariableId> &detectedIds,
-	char *srcFileName,
+	std::string &srcFileName,
 	std::fstream &sourceFile
 );
 
-void MakeUtilisedVarIds
-(
+void MakeUtilisedVarIds(
 	const std::vector<VariableId> &declaredVarIds,
 	const std::vector<VariableId> &detectedIds,
 	std::vector<VariableId> &utilisedVarIds
 );
 
-void ExtractLineNoFromVarIdVector
-(
+void ExtractLineNoFromVarIdVector(
 	std::vector<int> &lineNoVector,
 	const std::vector<VariableId> &varIdVector
 );
 
-void AppendPythonDeclaredDatatype
-(
+void AppendPythonDeclaredDatatype(
 	const std::vector<VariableId> &declaredVarIds,
 	const std::vector<int> &decVarLineNos,
-	char *outFileName,
+	const std::string &outFileName,
 	std::fstream &outFile
 );
