@@ -2,23 +2,22 @@
 #include "global_declarations.h"
 #include <vector>
 
-void ReadTxtFileContentToVector
-(
+void ReadTxtFileContentToVector(
 	std::vector<std::string> &vector,
 	std::fstream &file,
-	const char *fileName
+	const std::string &fileName
 );
-void WriteStringVectorToFile
-(
+
+void WriteStringVectorToFile(
 	std::vector<std::string> &vector,
 	std::fstream &file,
-	const char *fileName
+	const std::string &fileName
 );
 
-void EraseFileContents(const char *fileName, std::fstream &file);
+void EraseFileContents(const std::string &fileName, std::fstream &file);
 
-void OpenInputFile(const char *fileName, std::fstream &file);
+void OpenInputFile(const std::string &fileName, std::fstream &file);
 void CloseInputFile(std::fstream &file);
 
-void OpenOutputFile(const char *fileName, std::fstream &file);
+void OpenOutputFile(const std::string &fileName, std::fstream &file);
 void CloseOutputFile(std::fstream &file);
