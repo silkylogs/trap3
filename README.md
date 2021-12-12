@@ -1,5 +1,5 @@
 # trap3
-A transpiling applicaton for converting cambridge pseudocode to python
+A transpiling applicaton for converting Cambridge Ordinary (O-level) standard pseudocode to python
 
 
 ## Installation instructions
@@ -8,3 +8,5 @@ Download the executables from the releases tab. While the wrapper application is
 ## Compilation instructions
 For windows users, having a c/c++ compiler installed and running the make.bat files for both the main and the wrapper programs are sufficient.
 
+## Documentation
+Coming soon!
