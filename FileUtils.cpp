@@ -9,15 +9,13 @@ void ReadTxtFileContentToVector(
 	std::string line;
 	file.open(fileName);
 
-	if(!file.good())
-	{
+	if(!file.good()){
 		std::cerr << "File cannot be opened\n";
 		return;
 	}
 	std::cout << "Opened file for reading\n";
 
-	while(getline(file, line))
-	{
+	while(getline(file, line)){
 		vector.insert(vector.end(), line);
 	}
 
@@ -36,15 +34,13 @@ void WriteStringVectorToFile(
 
 	file.open(fileName, std::ios::out);
 
-	if(file.fail())
-	{
+	if(file.fail()){
 		std::cerr << "File cannot be opened\n";
 		return;
 	}
 	std::cout << "Opened file for writing\n";
 
-	for(size_t i = 0; i < vector.size(); i++)
-	{
+	for(size_t i = 0; i < vector.size(); i++){
 		file << vector[i] << "\n";
 	}
 
@@ -53,59 +49,50 @@ void WriteStringVectorToFile(
 	return;
 }
 
-void EraseFileContents(const std::string &fileName, std::fstream &file)
-{
+void EraseFileContents(const std::string &fileName, std::fstream &file){
 	file.open(fileName, std::ofstream::out | std::ofstream::trunc);
 	file.close();
 }
 
-void OpenInputFile(const std::string &fileName, std::fstream &file)
-{
+void OpenInputFile(const std::string &fileName, std::fstream &file){
 	//printf("Opening %s...\n", fileName);
 	std::cout << "Opening " << fileName << "...\n";
 	file.open(fileName);
-	if(!file.is_open())
-	{
+	if(!file.is_open()){
 		std::cerr << "Failed to open file for input\n";
 		std::cerr << "Press enter to exit the program\n";
 		std::cin.ignore();
 		exit(1);
 	}
-	else
-	{
+	else{
 		std::cout << "Success opening file for input\n";
 	}
 	return;
 }
 
-void CloseInputFile(std::fstream &file)
-{
+void CloseInputFile(std::fstream &file){
 	file.close();
 	std::cout << "Closed input file\n";
 	return;
 }
 
-void OpenOutputFile(const std::string &fileName, std::fstream &file)
-{
+void OpenOutputFile(const std::string &fileName, std::fstream &file){
 	//printf("Opening %s...\n", fileName);
 	std::cout << "Opening " << fileName << "...\n";
 	file.open(fileName);
-	if(!file.is_open())
-	{
+	if(!file.is_open()){
 		std::cerr << "Failed to open output file\n";
 		std::cerr << "Press enter to exit the program\n";
 		std::cin.ignore();
 		exit(1);
 	}
-	else
-	{
+	else{
 		std::cout << "Success opening output file\n";
 	}
 	return;
 }
 
-void CloseOutputFile(std::fstream &file)
-{
+void CloseOutputFile(std::fstream &file){
 	file.close();
 	std::cout << "Closed output file\n";
 	return;

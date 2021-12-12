@@ -1,8 +1,7 @@
 #pragma once
 #include "global_declarations.h"
 
-class OutLineStats
-{
+class OutLineStats{
 	public:
 	int indentLevel;
 	enum lineMode
@@ -28,8 +27,7 @@ class OutLineStats
 		UndefinedLine	= 16
 	} mode;
 
-	OutLineStats()
-	{
+	OutLineStats(){
 		indentLevel = 0;
 		mode = UndefinedLine;
 	};

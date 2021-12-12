@@ -14,37 +14,37 @@ class VariableId
 	int lineNumber;
 	enum pseudocodeDataTypes
 	{
-		Int		= 0,
-		Real	= 1,
-		String	= 2,
-		Char	= 3,
-		Bool	= 4,
+		Int 	= 0,
+		Int_A	= 1,
+		Real	= 2,
+		Real_A	= 3,
+		String	= 4,
+		String_A= 5,
+		Char	= 6,
+		Char_A	= 7,
+		Bool	= 8,
+		Bool_A	= 9,
 		None	= 100
 	} variableDataType;
 
-	VariableId()
-	{
+	VariableId(){
 		variableName = NO_VAR;
 		variableDataType = pseudocodeDataTypes::None;
 		lineNumber = -1;
 	}
-
-	VariableId(std::string varName, int varDataType, int lineNo)
-	{
+	VariableId(std::string varName, int varDataType, int lineNo){
 		variableName = varName;
 		variableDataType = (pseudocodeDataTypes)varDataType;
 		lineNumber = lineNo;
 	}
-
 	void PrintDetails(void);
 };
 
+void PrintVariableIdVector(std::vector<VariableId> &v);
+
 std::string EquivalentPythonVar(VariableId vId);
-
 bool IsVariable(std::string str);
-
 std::string DeclaredVariableName(std::string line);
-
 VariableId::pseudocodeDataTypes DeclaredVarDataType(const std::string line);
 
 void DetectAddDeclaredVariable(
@@ -60,7 +60,6 @@ bool StringContainsCharInSet(
 
 //returns negative number if not found
 int IndexOfCharInSet(std::string &originalLine, const std::string &charSet);
-
 std::vector<VariableId> DetectNamesInLine(std::string line);
 
 void RemoveUnwantedCharsFromLine(
